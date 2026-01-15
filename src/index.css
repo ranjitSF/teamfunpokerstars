@@ -1,0 +1,160 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: linear-gradient(135deg, #0a0e1a 0%, #050810 100%);
+  color: #ffffff;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0e1a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d4af37;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ffd700;
+}
+
+/* Elegant card animations */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.shimmer {
+  animation: shimmer 2s infinite linear;
+  background: linear-gradient(
+    to right,
+    #1a1f35 0%,
+    #2a2f45 20%,
+    #1a1f35 40%,
+    #1a1f35 100%
+  );
+  background-size: 1000px 100%;
+}
+
+/* Gold gradient text */
+.gold-gradient-text {
+  background: linear-gradient(135deg, #d4af37 0%, #ffd700 50%, #d4af37 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Card hover effects */
+.elegant-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.elegant-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(212, 175, 55, 0.2);
+}
+
+/* Button styles */
+.btn-primary {
+  background: linear-gradient(135deg, #d4af37 0%, #ffd700 100%);
+  color: #0a0e1a;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(212, 175, 55, 0.5);
+}
+
+.btn-secondary {
+  background: #1a1f35;
+  color: #d4af37;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 8px;
+  border: 1px solid #d4af37;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background: #2a2f45;
+  border-color: #ffd700;
+  color: #ffd700;
+}
+
+/* Loading spinner */
+.spinner {
+  border: 3px solid rgba(212, 175, 55, 0.1);
+  border-top: 3px solid #d4af37;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Chip/Badge styles */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.chip-gold {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(255, 215, 0, 0.2) 100%);
+  color: #ffd700;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.chip-red {
+  background: rgba(220, 38, 38, 0.2);
+  color: #ef4444;
+  border: 1px solid rgba(220, 38, 38, 0.3);
+}
+
+.chip-green {
+  background: rgba(5, 150, 105, 0.2);
+  color: #10b981;
+  border: 1px solid rgba(5, 150, 105, 0.3);
+}
