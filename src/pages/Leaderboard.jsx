@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Trophy, Medal, Crown, TrendingUp, TrendingDown } from 'lucide-react';
+import { Trophy, Medal, Crown, TrendingUp, TrendingDown, Info } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { getLeaderboard } from '../services/api';
+import { getLeaderboard } from '../services';
 import LoadingSpinner from '../components/LoadingSpinner';
+import InfoTooltip from '../components/Tooltip';
 
 const Leaderboard = () => {
   const { authToken, player } = useAuth();
@@ -162,7 +163,17 @@ const Leaderboard = () => {
                 <th className="px-6 py-4 text-center text-sm font-semibold text-gray-400">Games</th>
                 <th className="px-6 py-4 text-center text-sm font-semibold text-gray-400">Wins</th>
                 <th className="px-6 py-4 text-center text-sm font-semibold text-gray-400">Avg Position</th>
-                <th className="px-6 py-4 text-right text-sm font-semibold text-gray-400">Total Points</th>
+                <th className="px-6 py-4 text-right text-sm font-semibold text-gray-400">
+                  <div className="flex items-center justify-end gap-2">
+                    <span>Total Points</span>
+                    <InfoTooltip
+                      content="Only the top 3 finishers earn points in each game: 1st place receives 100 points, 2nd place receives 50 points, and 3rd place receives 10 points. Finishing in 4th place or lower earns 0 points."
+                      position="left"
+                    >
+                      <Info className="w-4 h-4 text-poker-accent hover:text-poker-gold transition-colors cursor-help" />
+                    </InfoTooltip>
+                  </div>
+                </th>
               </tr>
             </thead>
             <tbody>

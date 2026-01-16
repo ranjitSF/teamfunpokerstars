@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar, Plus, Users, Edit, Trash2, Check, X } from 'lucide-react';
+import { Calendar, Plus, Users, Edit, Trash2, Check, X, Info } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { getGames, createGame, getPlayers, updateGameResults, deleteGame, getGame } from '../services/api';
+import { getGames, createGame, getPlayers, updateGameResults, deleteGame, getGame } from '../services';
 import { formatInTimeZone } from 'date-fns-tz';
 import LoadingSpinner from '../components/LoadingSpinner';
+import InfoTooltip from '../components/Tooltip';
 
 const Games = () => {
-  const { authToken, currentUser } = useAuth();
+  const { authToken, currentUser, isAdmin } = useAuth();
   const [games, setGames] = useState([]);
   const [players, setPlayers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -104,13 +105,16 @@ const Games = () => {
           </h1>
           <p className="text-gray-400">Manage poker sessions and results</p>
         </div>
-        <button
-          onClick={() => setShowCreateModal(true)}
-          className="btn-primary flex items-center space-x-2"
-        >
-          <Plus className="w-5 h-5" />
-          <span>New Game</span>
-        </button>
+        {/* Admin Only: Create Game Button */}
+        {isAdmin && (
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="btn-primary flex items-center space-x-2"
+          >
+            <Plus className="w-5 h-5" />
+            <span>New Game</span>
+          </button>
+        )}
       </motion.div>
 
       {/* Year Filter */}
@@ -191,13 +195,16 @@ const Games = () => {
                   >
                     <Edit className="w-5 h-5" />
                   </button>
-                  <button
-                    onClick={() => handleDeleteGame(game.id)}
-                    className="p-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 transition-all"
-                    title="Delete Game"
-                  >
-                    <Trash2 className="w-5 h-5" />
-                  </button>
+                  {/* Admin Only: Delete Game Button */}
+                  {isAdmin && (
+                    <button
+                      onClick={() => handleDeleteGame(game.id)}
+                      className="p-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 transition-all"
+                      title="Delete Game"
+                    >
+                      <Trash2 className="w-5 h-5" />
+                    </button>
+                  )}
                 </div>
               </div>
             </motion.div>
@@ -379,9 +386,17 @@ const ResultsModal = ({ game, players, onClose, onSave }) => {
         className="bg-poker-card rounded-2xl p-8 max-w-2xl w-full border border-poker-accent/30 my-8"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="text-2xl font-display font-bold gold-gradient-text mb-2">
-          Enter Game Results
-        </h2>
+        <div className="flex items-start justify-between mb-2">
+          <h2 className="text-2xl font-display font-bold gold-gradient-text">
+            Enter Game Results
+          </h2>
+          <InfoTooltip
+            content="Only the top 3 finishers earn points: 1st place earns 100 points, 2nd place earns 50 points, and 3rd place earns 10 points. All other positions earn 0 points. Aim for the podium!"
+            position="left"
+          >
+            <Info className="w-5 h-5 text-poker-accent hover:text-poker-gold transition-colors cursor-help" />
+          </InfoTooltip>
+        </div>
         <p className="text-gray-400 mb-6">
           {new Date(game.game.game_date).toLocaleDateString('en-US', {
             weekday: 'long',

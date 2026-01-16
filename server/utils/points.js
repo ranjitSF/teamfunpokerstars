@@ -1,21 +1,25 @@
 /**
  * Calculate points based on finishing position
- * Classic tournament-style scoring that rewards top finishes
+ * Only top 3 finishers earn points
  *
  * @param {number} position - Finishing position (1-indexed)
  * @param {number} totalPlayers - Total number of players who attended
  * @returns {number} Points earned
  */
 export const calculatePoints = (position, totalPlayers) => {
-  // Award points in descending order
-  // Example: 8 players -> 1st: 100, 2nd: 85, 3rd: 70, 4th: 55, 5th: 40, 6th: 25, 7th: 15, 8th: 5
+  // Only top 3 finishers earn points
+  // 1st: 100 points, 2nd: 50 points, 3rd: 10 points, 4th+: 0 points
 
-  const basePoints = 100;
-  const decrement = Math.floor(basePoints / (totalPlayers + 1));
-
-  const points = Math.max(5, basePoints - ((position - 1) * decrement));
-
-  return points;
+  switch (position) {
+    case 1:
+      return 100;
+    case 2:
+      return 50;
+    case 3:
+      return 10;
+    default:
+      return 0;
+  }
 };
 
 /**

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Trophy, TrendingUp, Calendar, Award, Target, Flame } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Trophy, TrendingUp, Calendar, Award, Target, Flame, Info } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { getPlayerStats, getRecentForm, getLeaderboard } from '../services/api';
+import { getPlayerStats, getRecentForm, getLeaderboard } from '../services';
 import StatCard from '../components/StatCard';
 import LoadingSpinner from '../components/LoadingSpinner';
+import InfoTooltip from '../components/Tooltip';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const Dashboard = () => {
@@ -62,13 +64,23 @@ const Dashboard = () => {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard
-          icon={Trophy}
-          label="Total Points"
-          value={stats?.total_points || 0}
-          subValue={`${stats?.games_played || 0} games played`}
-          delay={0}
-        />
+        <div className="relative">
+          <StatCard
+            icon={Trophy}
+            label="Total Points"
+            value={stats?.total_points || 0}
+            subValue={`${stats?.games_played || 0} games played`}
+            delay={0}
+          />
+          <div className="absolute top-4 right-4">
+            <InfoTooltip
+              content="Only the top 3 finishers earn points in each game: 1st place receives 100 points, 2nd place receives 50 points, and 3rd place receives 10 points. This scoring system rewards podium finishes and consistent top performance."
+              position="bottom"
+            >
+              <Info className="w-4 h-4 text-poker-accent hover:text-poker-gold transition-colors" />
+            </InfoTooltip>
+          </div>
+        </div>
         <StatCard
           icon={Award}
           label="Wins"
@@ -178,23 +190,23 @@ const Dashboard = () => {
         transition={{ delay: 0.6 }}
         className="grid grid-cols-1 md:grid-cols-2 gap-6"
       >
-        <a
-          href="/games"
+        <Link
+          to="/games"
           className="bg-gradient-to-br from-poker-accent/20 to-poker-gold/10 rounded-xl p-8 border border-poker-accent/30 hover:border-poker-accent transition-all elegant-card group"
         >
           <Calendar className="w-12 h-12 text-poker-accent mb-4 group-hover:scale-110 transition-transform" />
           <h3 className="text-xl font-bold text-white mb-2">Create New Game</h3>
           <p className="text-gray-400">Schedule your next poker night</p>
-        </a>
+        </Link>
 
-        <a
-          href="/leaderboard"
+        <Link
+          to="/leaderboard"
           className="bg-gradient-to-br from-poker-accent/20 to-poker-gold/10 rounded-xl p-8 border border-poker-accent/30 hover:border-poker-accent transition-all elegant-card group"
         >
           <Trophy className="w-12 h-12 text-poker-accent mb-4 group-hover:scale-110 transition-transform" />
           <h3 className="text-xl font-bold text-white mb-2">View Leaderboard</h3>
           <p className="text-gray-400">See where you rank among champions</p>
-        </a>
+        </Link>
       </motion.div>
     </div>
   );

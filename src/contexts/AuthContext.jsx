@@ -1,15 +1,35 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import {
-  signInWithEmailAndPassword,
+  sendSignInLinkToEmail,
+  isSignInWithEmailLink,
+  signInWithEmailLink,
   signOut as firebaseSignOut,
   onAuthStateChanged,
-  createUserWithEmailAndPassword,
-  updateProfile
 } from 'firebase/auth';
 import { auth } from '../config/firebase';
-import { syncPlayer } from '../services/api';
+import { syncPlayer } from '../services';
 
 const AuthContext = createContext();
+
+// Check if we're in demo mode
+const isDemoMode = import.meta.env.VITE_MODE === 'demo';
+
+// Admin email
+const ADMIN_EMAIL = 'ranjit.jose.2012@gmail.com';
+
+// Demo data
+const demoPlayer = {
+  id: 1,
+  name: 'Demo Player',
+  email: 'demo@example.com',
+  firebase_uid: 'demo-uid',
+};
+
+const demoUser = {
+  uid: 'demo-uid',
+  email: 'demo@example.com',
+  displayName: 'Demo Player'
+};
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
@@ -20,12 +40,36 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState(null);
-  const [player, setPlayer] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [authToken, setAuthToken] = useState(null);
+  const [currentUser, setCurrentUser] = useState(isDemoMode ? demoUser : null);
+  const [player, setPlayer] = useState(isDemoMode ? demoPlayer : null);
+  const [loading, setLoading] = useState(!isDemoMode);
+  const [authToken, setAuthToken] = useState(isDemoMode ? 'demo-token' : null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
+    // Skip Firebase auth in demo mode
+    if (isDemoMode) {
+      setIsAdmin(true); // In demo mode, user is admin
+      return;
+    }
+
+    // Check if user is completing sign-in via email link
+    if (isSignInWithEmailLink(auth, window.location.href)) {
+      let email = window.localStorage.getItem('emailForSignIn');
+      if (!email) {
+        email = window.prompt('Please provide your email for confirmation');
+      }
+
+      signInWithEmailLink(auth, email, window.location.href)
+        .then(() => {
+          window.localStorage.removeItem('emailForSignIn');
+          // Auth state change will be handled by onAuthStateChanged
+        })
+        .catch((error) => {
+          console.error('Error signing in with email link:', error);
+        });
+    }
+
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
 
@@ -33,6 +77,9 @@ export const AuthProvider = ({ children }) => {
         try {
           const token = await user.getIdToken();
           setAuthToken(token);
+
+          // Check if user is admin
+          setIsAdmin(user.email === ADMIN_EMAIL);
 
           // Sync player data with backend
           const playerData = await syncPlayer({
@@ -49,6 +96,7 @@ export const AuthProvider = ({ children }) => {
       } else {
         setAuthToken(null);
         setPlayer(null);
+        setIsAdmin(false);
       }
 
       setLoading(false);
@@ -57,17 +105,26 @@ export const AuthProvider = ({ children }) => {
     return unsubscribe;
   }, []);
 
-  const signIn = async (email, password) => {
-    return signInWithEmailAndPassword(auth, email, password);
-  };
+  const sendSignInLink = async (email) => {
+    if (isDemoMode) {
+      // In demo mode, just pretend to send the link
+      return Promise.resolve();
+    }
 
-  const signUp = async (email, password, name) => {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    await updateProfile(userCredential.user, { displayName: name });
-    return userCredential;
+    const actionCodeSettings = {
+      url: window.location.origin + '/login',
+      handleCodeInApp: true,
+    };
+
+    return sendSignInLinkToEmail(auth, email, actionCodeSettings);
   };
 
   const signOut = async () => {
+    if (isDemoMode) {
+      // In demo mode, don't actually sign out
+      console.log('Demo mode - sign out disabled');
+      return;
+    }
     await firebaseSignOut(auth);
   };
 
@@ -75,8 +132,8 @@ export const AuthProvider = ({ children }) => {
     currentUser,
     player,
     authToken,
-    signIn,
-    signUp,
+    isAdmin,
+    sendSignInLink,
     signOut,
     loading,
   };

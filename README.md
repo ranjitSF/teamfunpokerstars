@@ -1,4 +1,4 @@
-# ♠️ Poker Championship Tracker
+# ♠️ Team Fun Poker Stars Championship Series
 
 An elegant, full-featured web application for tracking poker championship rankings among friends. Built with React, Node.js, PostgreSQL, and Firebase Authentication.
 

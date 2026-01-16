@@ -1,18 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
+import { Mail, CheckCircle } from 'lucide-react';
 
 const Login = () => {
-  const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
 
-  const { signIn, signUp } = useAuth();
+  const { sendSignInLink, currentUser } = useAuth();
   const navigate = useNavigate();
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (currentUser) {
+      navigate('/');
+    }
+  }, [currentUser, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,18 +26,69 @@ const Login = () => {
     setLoading(true);
 
     try {
-      if (isLogin) {
-        await signIn(email, password);
-      } else {
-        await signUp(email, password, name);
-      }
-      navigate('/');
+      await sendSignInLink(email);
+      setEmailSent(true);
+      // Store email for verification after redirect
+      window.localStorage.setItem('emailForSignIn', email);
     } catch (error) {
-      setError(error.message || 'Authentication failed');
+      setError(error.message || 'Failed to send sign-in link');
     } finally {
       setLoading(false);
     }
   };
+
+  if (emailSent) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="max-w-md w-full"
+        >
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-poker-accent to-poker-gold rounded-2xl shadow-gold mb-4">
+              <CheckCircle className="w-10 h-10 text-poker-dark" />
+            </div>
+            <h1 className="text-3xl md:text-4xl font-display font-bold gold-gradient-text mb-2">
+              Check Your Email
+            </h1>
+            <p className="text-gray-400">Magic link sent!</p>
+          </div>
+
+          <div className="bg-poker-card rounded-2xl p-8 border border-poker-accent/20 shadow-card">
+            <div className="text-center space-y-4">
+              <Mail className="w-16 h-16 text-poker-accent mx-auto" />
+              <p className="text-white">
+                We've sent a sign-in link to:
+              </p>
+              <p className="text-poker-accent font-medium text-lg">
+                {email}
+              </p>
+              <p className="text-gray-400 text-sm">
+                Click the link in your email to sign in. The link will expire in 60 minutes.
+              </p>
+              <div className="pt-4 border-t border-poker-accent/20">
+                <button
+                  onClick={() => {
+                    setEmailSent(false);
+                    setEmail('');
+                  }}
+                  className="text-poker-accent hover:text-poker-gold transition-colors text-sm"
+                >
+                  Use a different email
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <p className="text-center text-xs text-gray-500 mt-6">
+            Didn't receive the email? Check your spam folder.
+          </p>
+        </motion.div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
@@ -46,54 +103,20 @@ const Login = () => {
           <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-poker-accent to-poker-gold rounded-2xl shadow-gold mb-4">
             <span className="text-5xl">♠️</span>
           </div>
-          <h1 className="text-4xl font-display font-bold gold-gradient-text mb-2">
-            Poker Championship
+          <h1 className="text-3xl md:text-4xl font-display font-bold gold-gradient-text mb-2 leading-tight">
+            Team Fun Poker Stars<br/>Championship Series
           </h1>
           <p className="text-gray-400">Elite Rankings System</p>
         </div>
 
         {/* Form Card */}
         <div className="bg-poker-card rounded-2xl p-8 border border-poker-accent/20 shadow-card">
-          <div className="flex space-x-2 mb-6">
-            <button
-              onClick={() => setIsLogin(true)}
-              className={`flex-1 py-2 rounded-lg font-medium transition-all ${
-                isLogin
-                  ? 'bg-poker-accent text-poker-dark'
-                  : 'bg-poker-darker text-gray-400 hover:text-white'
-              }`}
-            >
-              Sign In
-            </button>
-            <button
-              onClick={() => setIsLogin(false)}
-              className={`flex-1 py-2 rounded-lg font-medium transition-all ${
-                !isLogin
-                  ? 'bg-poker-accent text-poker-dark'
-                  : 'bg-poker-darker text-gray-400 hover:text-white'
-              }`}
-            >
-              Sign Up
-            </button>
+          <div className="mb-6 text-center">
+            <h2 className="text-xl font-semibold text-white mb-2">Sign In</h2>
+            <p className="text-gray-400 text-sm">Enter your email to receive a magic link</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {!isLogin && (
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                  className="w-full px-4 py-3 bg-poker-darker border border-poker-accent/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-poker-accent transition-colors"
-                  placeholder="John Doe"
-                />
-              </div>
-            )}
-
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 Email Address
@@ -108,20 +131,6 @@ const Login = () => {
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Password
-              </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="w-full px-4 py-3 bg-poker-darker border border-poker-accent/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-poker-accent transition-colors"
-                placeholder="••••••••"
-              />
-            </div>
-
             {error && (
               <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-3">
                 <p className="text-red-400 text-sm">{error}</p>
@@ -131,23 +140,18 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              {loading ? 'Please wait...' : isLogin ? 'Sign In' : 'Create Account'}
+              {loading ? (
+                'Sending...'
+              ) : (
+                <>
+                  <Mail className="w-5 h-5" />
+                  Send Magic Link
+                </>
+              )}
             </button>
           </form>
-
-          <div className="mt-6 text-center text-sm text-gray-400">
-            <p>
-              {isLogin ? "Don't have an account? " : 'Already have an account? '}
-              <button
-                onClick={() => setIsLogin(!isLogin)}
-                className="text-poker-accent hover:text-poker-gold transition-colors"
-              >
-                {isLogin ? 'Sign Up' : 'Sign In'}
-              </button>
-            </p>
-          </div>
         </div>
 
         <p className="text-center text-xs text-gray-500 mt-6">

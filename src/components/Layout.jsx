@@ -33,10 +33,10 @@ const Layout = ({ children }) => {
                 <span className="text-2xl">♠️</span>
               </div>
               <div>
-                <h1 className="text-xl font-display font-bold gold-gradient-text">
-                  Poker Championship
+                <h1 className="text-lg font-display font-bold gold-gradient-text leading-tight">
+                  Team Fun Poker Stars
                 </h1>
-                <p className="text-xs text-gray-400">Elite Rankings</p>
+                <p className="text-xs text-gray-400">Championship Series</p>
               </div>
             </Link>
 
@@ -120,7 +120,7 @@ const Layout = ({ children }) => {
       <footer className="border-t border-poker-accent/20 mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center text-gray-400 text-sm">
-            <p>♠️ Poker Championship Tracker ♣️</p>
+            <p>♠️ Team Fun Poker Stars Championship Series ♣️</p>
             <p className="mt-2">
               Built with elegance for champions
             </p>

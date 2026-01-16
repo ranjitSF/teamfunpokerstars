@@ -9,12 +9,37 @@
 }
 
 body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   background: linear-gradient(135deg, #0a0e1a 0%, #050810 100%);
   color: #ffffff;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.011em;
+  font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
+  text-rendering: optimizeLegibility;
+}
+
+/* Ensure all headings use Inter font for consistency */
+h1, h2, h3, h4, h5, h6,
+.font-display {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em;
+  font-feature-settings: 'kern' 1, 'liga' 1;
+}
+
+/* Specific heading weights for hierarchy */
+h1 {
+  font-weight: 800 !important;
+}
+
+h2 {
+  font-weight: 700 !important;
+}
+
+h3, h4, h5, h6 {
+  font-weight: 600 !important;
 }
 
 #root {
@@ -79,8 +104,9 @@ body {
   box-shadow: 0 20px 40px rgba(212, 175, 55, 0.2);
 }
 
-/* Button styles */
+/* Button styles - ensure they use Inter font */
 .btn-primary {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif !important;
   background: linear-gradient(135deg, #d4af37 0%, #ffd700 100%);
   color: #0a0e1a;
   font-weight: 600;
@@ -90,6 +116,7 @@ body {
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+  letter-spacing: -0.01em;
 }
 
 .btn-primary:hover {
@@ -98,6 +125,7 @@ body {
 }
 
 .btn-secondary {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif !important;
   background: #1a1f35;
   color: #d4af37;
   font-weight: 600;
@@ -106,6 +134,7 @@ body {
   border: 1px solid #d4af37;
   cursor: pointer;
   transition: all 0.3s ease;
+  letter-spacing: -0.01em;
 }
 
 .btn-secondary:hover {

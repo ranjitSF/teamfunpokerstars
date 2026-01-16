@@ -9,6 +9,9 @@ import Leaderboard from './pages/Leaderboard';
 import Games from './pages/Games';
 import Players from './pages/Players';
 
+// Check if we're in demo mode
+const isDemoMode = import.meta.env.VITE_MODE === 'demo';
+
 function App() {
   return (
     <AuthProvider>
@@ -58,6 +61,11 @@ function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
+      {isDemoMode && (
+        <div className="fixed bottom-4 right-4 bg-poker-accent text-poker-dark px-4 py-2 rounded-lg font-bold shadow-gold z-50">
+          🎮 DEMO MODE
+        </div>
+      )}
     </AuthProvider>
   );
 }
