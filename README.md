@@ -148,22 +148,14 @@ npm start
 
 ## 📊 Points System
 
-The app uses a position-based scoring system:
+The app uses a podium-based scoring system that rewards top finishers:
 
-- Points are calculated based on finishing position
-- Formula: `points = max(5, 100 - ((position - 1) * decrement))`
-- Higher positions earn more points
-- Consistent performance is rewarded
+- **1st place**: 100 points 🥇
+- **2nd place**: 50 points 🥈
+- **3rd place**: 10 points 🥉
+- **4th+ place**: 0 points
 
-Example for 8 players:
-- 1st place: 100 points
-- 2nd place: 85 points
-- 3rd place: 70 points
-- 4th place: 55 points
-- 5th place: 40 points
-- 6th place: 25 points
-- 7th place: 15 points
-- 8th place: 5 points
+Only the top 3 finishers earn points in each game, rewarding podium finishes and consistent top performance.
 
 ## 📧 Email Notifications
 
