@@ -79,6 +79,48 @@ router.post('/sync', verifyToken, async (req, res) => {
   }
 });
 
+// Add player (admin only) - sends magic link invitation
+router.post('/', verifyToken, async (req, res) => {
+  try {
+    const { name, email } = req.body;
+
+    // Check if user is admin
+    if (req.user.email !== ADMIN_EMAIL) {
+      return res.status(403).json({ error: 'Only admins can add players' });
+    }
+
+    if (!name || !email) {
+      return res.status(400).json({ error: 'Name and email are required' });
+    }
+
+    // Check if player already exists
+    const existingPlayer = await pool.query(
+      'SELECT id, name, email FROM players WHERE email = $1',
+      [email]
+    );
+
+    if (existingPlayer.rows.length > 0) {
+      return res.status(409).json({ error: 'A player with this email already exists' });
+    }
+
+    // Create player with a temporary firebase_uid (will be updated when they sign in)
+    const result = await pool.query(
+      'INSERT INTO players (firebase_uid, email, name, is_active) VALUES ($1, $2, $3, true) RETURNING id, name, email, created_at',
+      [`pending_${email}`, email, name]
+    );
+
+    const newPlayer = result.rows[0];
+
+    // Send welcome email with magic link
+    await sendWelcomeEmail({ email: newPlayer.email, name: newPlayer.name });
+
+    res.status(201).json(newPlayer);
+  } catch (error) {
+    console.error('Error adding player:', error);
+    res.status(500).json({ error: 'Failed to add player' });
+  }
+});
+
 // Get player statistics
 router.get('/:id/stats', verifyToken, async (req, res) => {
   try {

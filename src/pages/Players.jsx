@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, TrendingUp, Award, Target, UserPlus, X, Info, Edit2, Check } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { getPlayers, getPlayerStats, updatePlayerName } from '../services';
+import { getPlayers, getPlayerStats, updatePlayerName, addPlayer } from '../services';
 import LoadingSpinner from '../components/LoadingSpinner';
 import InfoTooltip from '../components/Tooltip';
 
@@ -52,9 +52,10 @@ const Players = () => {
     setAddPlayerLoading(true);
 
     try {
-      // TODO: Implement backend API call to add player
-      // For now, just show a message
-      alert(`Adding player: ${newPlayerName} (${newPlayerEmail})\n\nBackend API endpoint needs to be implemented.`);
+      await addPlayer({
+        name: newPlayerName,
+        email: newPlayerEmail,
+      }, authToken);
 
       // Reset form
       setNewPlayerEmail('');

@@ -15,6 +15,7 @@ export const getPlayerStats = api.getPlayerStats;
 export const getPlayerYearlyStats = api.getPlayerYearlyStats;
 export const getPlayerGames = api.getPlayerGames;
 export const updatePlayerName = api.updatePlayerName;
+export const addPlayer = api.addPlayer;
 export const getGames = api.getGames;
 export const getGame = api.getGame;
 export const createGame = api.createGame;

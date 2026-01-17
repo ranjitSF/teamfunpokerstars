@@ -64,6 +64,20 @@ export const updatePlayerName = async (playerId, name, token) => {
   return response.json();
 };
 
+export const addPlayer = async (playerData, token) => {
+  const response = await fetch(`${API_URL}/players`, {
+    method: 'POST',
+    headers: getAuthHeaders(token),
+    body: JSON.stringify(playerData),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || 'Failed to add player');
+  }
+  return response.json();
+};
+
 // Game endpoints
 export const getGames = async (token, year = null) => {
   const url = year ? `${API_URL}/games?year=${year}` : `${API_URL}/games`;
