@@ -60,7 +60,7 @@ const Leaderboard = () => {
     }
   };
 
-  const years = ['all', '2024', '2023', '2022'];
+  const years = ['all', '2026'];
 
   return (
     <div className="space-y-8">
