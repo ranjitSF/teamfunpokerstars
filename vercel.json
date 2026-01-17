@@ -20,7 +20,8 @@
     }
   ],
   "env": {
-    "NODE_ENV": "production"
+    "NODE_ENV": "production",
+    "VITE_API_URL": "https://teamfunpokerstars-production.up.railway.app/api"
   },
   "crons": [
     {
