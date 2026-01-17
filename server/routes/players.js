@@ -53,10 +53,10 @@ router.post('/sync', verifyToken, async (req, res) => {
 
     let player;
     if (existingPlayer.rows.length > 0) {
-      // Update existing player
+      // Update existing player - only update phone, preserve custom name
       const updateResult = await pool.query(
-        'UPDATE players SET name = $1, phone = $2 WHERE firebase_uid = $3 RETURNING *',
-        [name, phone, firebase_uid]
+        'UPDATE players SET phone = $1 WHERE firebase_uid = $2 RETURNING *',
+        [phone, firebase_uid]
       );
       player = updateResult.rows[0];
     } else {
