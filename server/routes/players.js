@@ -5,6 +5,9 @@ import { sendWelcomeEmail } from '../utils/email.js';
 
 const router = express.Router();
 
+// Admin email
+const ADMIN_EMAIL = 'ranjit.jose.2012@gmail.com';
+
 // Get all players
 router.get('/', verifyToken, async (req, res) => {
   try {
@@ -118,11 +121,16 @@ router.get('/:id/yearly-stats', verifyToken, async (req, res) => {
   }
 });
 
-// Update player name
+// Update player name (admin only)
 router.patch('/:id/name', verifyToken, async (req, res) => {
   try {
     const { name } = req.body;
     const playerId = req.params.id;
+
+    // Check if user is admin
+    if (req.user.email !== ADMIN_EMAIL) {
+      return res.status(403).json({ error: 'Only admins can update player names' });
+    }
 
     if (!name || name.trim() === '') {
       return res.status(400).json({ error: 'Name is required' });

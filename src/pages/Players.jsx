@@ -270,7 +270,7 @@ const Players = () => {
                         <h3 className="text-lg font-bold text-white">{player.name}</h3>
                         <p className="text-xs text-gray-400">{player.email}</p>
                       </div>
-                      {currentUser && currentUser.id === player.id && (
+                      {isAdmin && (
                         <button
                           onClick={() => handleEditName(player)}
                           className="text-gray-400 hover:text-poker-accent transition-colors"
