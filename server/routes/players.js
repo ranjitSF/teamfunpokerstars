@@ -118,6 +118,32 @@ router.get('/:id/yearly-stats', verifyToken, async (req, res) => {
   }
 });
 
+// Update player name
+router.patch('/:id/name', verifyToken, async (req, res) => {
+  try {
+    const { name } = req.body;
+    const playerId = req.params.id;
+
+    if (!name || name.trim() === '') {
+      return res.status(400).json({ error: 'Name is required' });
+    }
+
+    const result = await pool.query(
+      'UPDATE players SET name = $1 WHERE id = $2 RETURNING id, name, email, phone, created_at',
+      [name.trim(), playerId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Player not found' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error('Error updating player name:', error);
+    res.status(500).json({ error: 'Failed to update player name' });
+  }
+});
+
 // Get player game history
 router.get('/:id/games', verifyToken, async (req, res) => {
   try {

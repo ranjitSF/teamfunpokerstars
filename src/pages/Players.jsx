@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, TrendingUp, Award, Target, UserPlus, X, Info } from 'lucide-react';
+import { Users, TrendingUp, Award, Target, UserPlus, X, Info, Edit2, Check } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { getPlayers, getPlayerStats } from '../services';
+import { getPlayers, getPlayerStats, updatePlayerName } from '../services';
 import LoadingSpinner from '../components/LoadingSpinner';
 import InfoTooltip from '../components/Tooltip';
 
 const Players = () => {
-  const { authToken, isAdmin } = useAuth();
+  const { authToken, isAdmin, currentUser } = useAuth();
   const [players, setPlayers] = useState([]);
   const [playersWithStats, setPlayersWithStats] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -16,6 +16,9 @@ const Players = () => {
   const [newPlayerName, setNewPlayerName] = useState('');
   const [addPlayerLoading, setAddPlayerLoading] = useState(false);
   const [addPlayerError, setAddPlayerError] = useState('');
+  const [editingPlayerId, setEditingPlayerId] = useState(null);
+  const [editedName, setEditedName] = useState('');
+  const [updateNameLoading, setUpdateNameLoading] = useState(false);
 
   const fetchData = async () => {
     try {
@@ -65,6 +68,40 @@ const Players = () => {
     } finally {
       setAddPlayerLoading(false);
     }
+  };
+
+  const handleEditName = (player) => {
+    setEditingPlayerId(player.id);
+    setEditedName(player.name);
+  };
+
+  const handleSaveName = async (playerId) => {
+    if (!editedName.trim()) {
+      return;
+    }
+
+    setUpdateNameLoading(true);
+    try {
+      await updatePlayerName(playerId, editedName, authToken);
+
+      // Update local state
+      setPlayersWithStats(playersWithStats.map(p =>
+        p.id === playerId ? { ...p, name: editedName } : p
+      ));
+
+      setEditingPlayerId(null);
+      setEditedName('');
+    } catch (error) {
+      console.error('Error updating name:', error);
+      alert('Failed to update name. Please try again.');
+    } finally {
+      setUpdateNameLoading(false);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingPlayerId(null);
+    setEditedName('');
   };
 
   if (loading) {
@@ -198,13 +235,52 @@ const Players = () => {
           >
             {/* Player Avatar */}
             <div className="flex items-start justify-between mb-4">
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-3 flex-1">
                 <div className="w-12 h-12 bg-gradient-to-br from-poker-accent to-poker-gold rounded-full flex items-center justify-center font-bold text-poker-dark text-xl">
                   {player.name.charAt(0).toUpperCase()}
                 </div>
-                <div>
-                  <h3 className="text-lg font-bold text-white">{player.name}</h3>
-                  <p className="text-xs text-gray-400">{player.email}</p>
+                <div className="flex-1">
+                  {editingPlayerId === player.id ? (
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        value={editedName}
+                        onChange={(e) => setEditedName(e.target.value)}
+                        className="px-2 py-1 bg-poker-darker border border-poker-accent/30 rounded text-white text-sm focus:outline-none focus:border-poker-accent"
+                        autoFocus
+                      />
+                      <button
+                        onClick={() => handleSaveName(player.id)}
+                        disabled={updateNameLoading}
+                        className="text-green-400 hover:text-green-300"
+                      >
+                        <Check className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={handleCancelEdit}
+                        disabled={updateNameLoading}
+                        className="text-gray-400 hover:text-gray-300"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <div>
+                        <h3 className="text-lg font-bold text-white">{player.name}</h3>
+                        <p className="text-xs text-gray-400">{player.email}</p>
+                      </div>
+                      {currentUser && currentUser.id === player.id && (
+                        <button
+                          onClick={() => handleEditName(player)}
+                          className="text-gray-400 hover:text-poker-accent transition-colors"
+                          title="Edit name"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

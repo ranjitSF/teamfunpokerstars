@@ -8,3 +8,4 @@ dist
 build
 .firebase
 service-account.json
+.env*.local

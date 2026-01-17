@@ -53,6 +53,17 @@ export const getPlayerGames = async (playerId, token) => {
   return response.json();
 };
 
+export const updatePlayerName = async (playerId, name, token) => {
+  const response = await fetch(`${API_URL}/players/${playerId}/name`, {
+    method: 'PATCH',
+    headers: getAuthHeaders(token),
+    body: JSON.stringify({ name }),
+  });
+
+  if (!response.ok) throw new Error('Failed to update player name');
+  return response.json();
+};
+
 // Game endpoints
 export const getGames = async (token, year = null) => {
   const url = year ? `${API_URL}/games?year=${year}` : `${API_URL}/games`;
