@@ -1,6 +1,6 @@
-# 🎯 Quick Setup Guide
+# Quick Setup Guide
 
-Follow these steps to get your Poker Championship Tracker up and running!
+This guide covers the setup steps for the Poker Championship Tracker.
 
 ## Step 1: Firebase Setup
 
@@ -100,11 +100,11 @@ To pre-authorize specific emails, you can either:
 - Let anyone with the URL sign up (simpler)
 - Or add validation in `server/routes/players.js` to check against a whitelist
 
-## 🎉 You're Done!
+## Setup Complete
 
-Your Poker Championship Tracker is now live and ready to track your games!
+The application is now configured.
 
-## 📞 Need Help?
+## Troubleshooting
 
 Common issues:
 - **Can't connect to database**: Check your DATABASE_URL format
@@ -112,7 +112,7 @@ Common issues:
 - **Emails not sending**: Check SMTP credentials and enable "Less secure apps" if using Gmail
 - **Build errors**: Run `npm install` again and check Node.js version (18+)
 
-## 🔄 Updating the App
+## Updating the App
 
 ```bash
 git pull
@@ -121,7 +121,7 @@ npm run dev  # Test locally
 git push     # Vercel auto-deploys
 ```
 
-## 🎨 Customization
+## Customization
 
 - Colors: Edit `tailwind.config.js`
 - Logo: Replace in `src/components/Layout.jsx`

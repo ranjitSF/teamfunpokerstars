@@ -2,14 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, TrendingUp, Award, Target, UserPlus, X, Info, Edit2, Check } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { getPlayers, getPlayerStats, updatePlayerName, addPlayer } from '../services';
+import { getPlayersWithStats, updatePlayerName, addPlayer } from '../services';
 import LoadingSpinner from '../components/LoadingSpinner';
 import InfoTooltip from '../components/Tooltip';
 
 const Players = () => {
   const { authToken, isAdmin, currentUser } = useAuth();
   const [players, setPlayers] = useState([]);
-  const [playersWithStats, setPlayersWithStats] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddPlayer, setShowAddPlayer] = useState(false);
   const [newPlayerEmail, setNewPlayerEmail] = useState('');
@@ -22,17 +21,9 @@ const Players = () => {
 
   const fetchData = async () => {
     try {
-      const playersData = await getPlayers(authToken);
+      // Single API call to get all players with their stats
+      const playersData = await getPlayersWithStats(authToken);
       setPlayers(playersData);
-
-      // Fetch stats for each player
-      const statsPromises = playersData.map(async (player) => {
-        const stats = await getPlayerStats(player.id, authToken);
-        return { ...player, stats };
-      });
-
-      const playersWithStatsData = await Promise.all(statsPromises);
-      setPlayersWithStats(playersWithStatsData);
     } catch (error) {
       console.error('Error fetching players:', error);
     } finally {
@@ -86,7 +77,7 @@ const Players = () => {
       await updatePlayerName(playerId, editedName, authToken);
 
       // Update local state
-      setPlayersWithStats(playersWithStats.map(p =>
+      setPlayers(players.map(p =>
         p.id === playerId ? { ...p, name: editedName } : p
       ));
 
@@ -226,7 +217,7 @@ const Players = () => {
 
       {/* Players Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {playersWithStats.map((player, index) => (
+        {players.map((player, index) => (
           <motion.div
             key={player.id}
             initial={{ opacity: 0, y: 20 }}
@@ -300,7 +291,7 @@ const Players = () => {
                   </InfoTooltip>
                 </div>
                 <span className="font-bold gold-gradient-text">
-                  {player.stats.total_points || 0}
+                  {player.total_points || 0}
                 </span>
               </div>
 
@@ -310,7 +301,7 @@ const Players = () => {
                   <span className="text-sm text-gray-400">Games Played</span>
                 </div>
                 <span className="font-bold text-white">
-                  {player.stats.games_played || 0}
+                  {player.games_played || 0}
                 </span>
               </div>
 
@@ -320,7 +311,7 @@ const Players = () => {
                   <span className="text-sm text-gray-400">Wins</span>
                 </div>
                 <span className="font-bold text-green-400">
-                  {player.stats.first_place_finishes || 0}
+                  {player.first_place_finishes || 0}
                 </span>
               </div>
 
@@ -329,32 +320,32 @@ const Players = () => {
                   <span className="text-sm text-gray-400">Avg Position</span>
                 </div>
                 <span className="font-bold text-white">
-                  {(player.stats.avg_position || 0).toFixed(1)}
+                  {(player.avg_position || 0).toFixed(1)}
                 </span>
               </div>
             </div>
 
             {/* Podium Badges */}
-            {(player.stats.first_place_finishes > 0 ||
-              player.stats.second_place_finishes > 0 ||
-              player.stats.third_place_finishes > 0) && (
+            {(player.first_place_finishes > 0 ||
+              player.second_place_finishes > 0 ||
+              player.third_place_finishes > 0) && (
               <div className="flex items-center space-x-2 mt-4 pt-4 border-t border-poker-accent/20">
-                {player.stats.first_place_finishes > 0 && (
+                {player.first_place_finishes > 0 && (
                   <div className="flex items-center space-x-1 chip chip-gold">
                     <span>🥇</span>
-                    <span>{player.stats.first_place_finishes}</span>
+                    <span>{player.first_place_finishes}</span>
                   </div>
                 )}
-                {player.stats.second_place_finishes > 0 && (
+                {player.second_place_finishes > 0 && (
                   <div className="flex items-center space-x-1 chip bg-gray-500/20 text-gray-300 border-gray-500/30">
                     <span>🥈</span>
-                    <span>{player.stats.second_place_finishes}</span>
+                    <span>{player.second_place_finishes}</span>
                   </div>
                 )}
-                {player.stats.third_place_finishes > 0 && (
+                {player.third_place_finishes > 0 && (
                   <div className="flex items-center space-x-1 chip bg-orange-500/20 text-orange-300 border-orange-500/30">
                     <span>🥉</span>
-                    <span>{player.stats.third_place_finishes}</span>
+                    <span>{player.third_place_finishes}</span>
                   </div>
                 )}
               </div>

@@ -1,15 +1,12 @@
 /**
  * Calculate points based on finishing position
- * Only top 3 finishers earn points
+ * Only top 3 finishers earn points:
+ * 1st: 100 points, 2nd: 50 points, 3rd: 10 points, 4th+: 0 points
  *
  * @param {number} position - Finishing position (1-indexed)
- * @param {number} totalPlayers - Total number of players who attended
  * @returns {number} Points earned
  */
-export const calculatePoints = (position, totalPlayers) => {
-  // Only top 3 finishers earn points
-  // 1st: 100 points, 2nd: 50 points, 3rd: 10 points, 4th+: 0 points
-
+export const calculatePoints = (position) => {
   switch (position) {
     case 1:
       return 100;
@@ -28,15 +25,10 @@ export const calculatePoints = (position, totalPlayers) => {
  * @returns {Array} Array with points added to each result
  */
 export const calculateGamePoints = (results) => {
-  const attendedPlayers = results.filter(r => r.attended);
-  const totalPlayers = attendedPlayers.length;
-
   return results.map(result => {
     if (!result.attended) {
       return { ...result, points: 0 };
     }
-
-    const points = calculatePoints(result.position, totalPlayers);
-    return { ...result, points };
+    return { ...result, points: calculatePoints(result.position) };
   });
 };

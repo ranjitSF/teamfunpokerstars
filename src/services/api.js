@@ -26,6 +26,15 @@ export const getPlayers = async (token) => {
   return response.json();
 };
 
+export const getPlayersWithStats = async (token) => {
+  const response = await fetch(`${API_URL}/players/with-stats`, {
+    headers: getAuthHeaders(token),
+  });
+
+  if (!response.ok) throw new Error('Failed to fetch players with stats');
+  return response.json();
+};
+
 export const getPlayerStats = async (playerId, token) => {
   const response = await fetch(`${API_URL}/players/${playerId}/stats`, {
     headers: getAuthHeaders(token),

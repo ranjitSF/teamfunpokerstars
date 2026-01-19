@@ -145,6 +145,22 @@ export const getPlayers = async (token) => {
   return demoPlayers;
 };
 
+export const getPlayersWithStats = async (token) => {
+  await delay(300);
+  return demoPlayers.map((player, index) => ({
+    ...player,
+    games_played: 15 - index,
+    total_points: 1580 - (index * 200),
+    avg_points: 87.8 - (index * 5),
+    avg_position: 2.1 + (index * 0.5),
+    first_place_finishes: 7 - index,
+    second_place_finishes: 5 - Math.floor(index / 2),
+    third_place_finishes: 3,
+    best_finish: 1,
+    worst_finish: 4 + index,
+  }));
+};
+
 export const getPlayerStats = async (playerId, token) => {
   await delay(300);
   return demoStats;

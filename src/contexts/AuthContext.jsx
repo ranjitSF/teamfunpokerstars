@@ -8,14 +8,9 @@ import {
 } from 'firebase/auth';
 import { auth } from '../config/firebase';
 import { syncPlayer } from '../services';
+import { isDemoMode, adminEmail } from '../config/app';
 
 const AuthContext = createContext();
-
-// Check if we're in demo mode
-const isDemoMode = import.meta.env.VITE_MODE === 'demo';
-
-// Admin email
-const ADMIN_EMAIL = 'ranjit.jose.2012@gmail.com';
 
 // Demo data
 const demoPlayer = {
@@ -79,7 +74,7 @@ export const AuthProvider = ({ children }) => {
           setAuthToken(token);
 
           // Check if user is admin
-          setIsAdmin(user.email === ADMIN_EMAIL);
+          setIsAdmin(user.email === adminEmail);
 
           // Sync player data with backend
           const playerData = await syncPlayer({

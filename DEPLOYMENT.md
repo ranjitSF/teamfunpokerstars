@@ -1,6 +1,6 @@
 # Deployment Guide - Team Fun Poker Stars Championship Series
 
-## 📋 Pre-Deployment Checklist
+## Pre-Deployment Checklist
 
 ### 1. Environment Setup
 - [ ] Create Firebase project at https://console.firebase.google.com
@@ -17,7 +17,7 @@
 
 ---
 
-## 🚀 Deployment Options
+## Deployment Options
 
 ### Option 1: Vercel (Frontend) + Railway (Backend) [RECOMMENDED]
 
@@ -56,7 +56,7 @@
 
 ---
 
-## 🔧 Environment Variables
+## Environment Variables
 
 ### Frontend (.env for production)
 ```bash
@@ -90,7 +90,7 @@ PORT=3001
 NODE_ENV=production
 
 # Admin Email
-ADMIN_EMAIL=ranjit.jose.2012@gmail.com
+ADMIN_EMAIL=your-admin-email@example.com
 ```
 
 ---
@@ -117,7 +117,7 @@ npm run preview
 
 ---
 
-## 🔥 Firebase Setup
+## Firebase Setup
 
 ### 1. Create Firebase Project
 1. Go to https://console.firebase.google.com
@@ -154,34 +154,33 @@ npm run preview
 
 ---
 
-## 💾 Database Setup
+## Database Setup
 
 ### Option A: Supabase (Recommended)
 1. Create account at https://supabase.com
 2. Create new project
 3. Get connection string from Settings → Database
-4. Run migrations (copy from server/migrations/*.sql)
+4. Run schema from `server/database/schema.sql`
 
 ### Option B: Railway
 1. Create account at https://railway.app
 2. Create PostgreSQL service
 3. Get connection string from Variables tab
-4. Connect and run migrations
+4. Run schema from `server/database/schema.sql`
 
 ### Option C: Neon
 1. Create account at https://neon.tech
 2. Create project and database
 3. Get connection string
-4. Run migrations
+4. Run schema from `server/database/schema.sql`
 
-### Database Migrations
-Run these SQL files in order:
-1. `server/migrations/001_initial_schema.sql`
-2. `server/migrations/002_add_points_column.sql` (if exists)
+### Database Schema
+Run the schema file to create all tables and views:
+- `server/database/schema.sql`
 
 ---
 
-## 🌐 Deployment Steps
+## Deployment Steps
 
 ### Step 1: Push to GitHub
 
@@ -263,9 +262,9 @@ git push -u origin main
    - Add Firebase service account credentials
    - Set `PORT` (Railway provides this automatically usually)
 
-5. **Run Database Migrations**
+5. **Run Database Schema**
    - Connect to database using provided connection string
-   - Run SQL migrations from `server/migrations/`
+   - Run SQL from `server/database/schema.sql`
    - Or use Railway's SQL console
 
 6. **Deploy**
@@ -306,7 +305,7 @@ git push -u origin main
 
 ---
 
-## 🔒 Security Checklist
+## Security Checklist
 
 - [ ] `.env` file in `.gitignore` (never commit secrets)
 - [ ] `service-account.json` in `.gitignore`
@@ -318,7 +317,7 @@ git push -u origin main
 
 ---
 
-## 📊 Post-Deployment
+## Post-Deployment
 
 ### Add Your Friends as Players
 1. Login as admin (`ranjit.jose.2012@gmail.com`)
@@ -341,7 +340,7 @@ git push -u origin main
 
 ---
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Issue: Magic link emails not sending
 - Check Firebase Authentication is enabled
@@ -352,7 +351,7 @@ git push -u origin main
 ### Issue: Database connection errors
 - Verify `DATABASE_URL` is correct
 - Check database is running
-- Verify migrations have been run
+- Verify schema has been run (`server/database/schema.sql`)
 - Check connection pool limits
 
 ### Issue: Admin features not showing
@@ -372,7 +371,7 @@ git push -u origin main
 
 ---
 
-## 📝 Maintenance
+## Maintenance
 
 ### Regular Tasks
 - Monitor user feedback
@@ -390,7 +389,7 @@ git push -u origin main
 
 ---
 
-## 💡 Tips
+## Tips
 
 1. **Use Demo Mode for Development**
    - Keep `VITE_MODE=demo` in local `.env`
@@ -411,15 +410,13 @@ git push -u origin main
 
 ---
 
-## 🎉 Ready to Deploy!
+## Deployment Complete
 
-Once you've completed all steps, your application will be live and accessible to your friends at your custom URL!
-
-Share the link with your poker group and enjoy tracking your championship series! ♠️♣️♥️♦️
+Once all steps are completed, the application will be accessible at your configured URL.
 
 ---
 
-## 🌐 Custom Domain Setup: TeamFunPokerStars.com
+## Custom Domain Setup
 
 ### Step-by-Step Domain Configuration
 
@@ -529,13 +526,13 @@ Visit your domain and test:
 
 ---
 
-## 🎯 Your Friends Can Access At:
+## User Access
 
-**Production URL:** https://teamfunpokerstars.com
+**URL:** https://teamfunpokerstars.com (or your configured domain)
 
-Share this link with your poker group! They can:
-1. Go to the website
-2. Enter their email
-3. Click the magic link in their email
-4. Start tracking games!
+User sign-up process:
+1. Visit the website
+2. Enter email address
+3. Click the magic link in email
+4. Access the application
 

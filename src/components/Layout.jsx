@@ -1,10 +1,12 @@
 import React from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate, Outlet } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Trophy, BarChart3, Calendar, LogOut, Users } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 const Layout = ({ children }) => {
+  // Support both children prop (legacy) and Outlet (nested routes)
+  const content = children || <Outlet />;
   const location = useLocation();
   const navigate = useNavigate();
   const { player, signOut } = useAuth();
@@ -113,7 +115,7 @@ const Layout = ({ children }) => {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {children}
+        {content}
       </main>
 
       {/* Footer */}

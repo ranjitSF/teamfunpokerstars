@@ -41,6 +41,7 @@ CREATE INDEX IF NOT EXISTS idx_game_results_game ON game_results(game_id);
 CREATE INDEX IF NOT EXISTS idx_game_results_player ON game_results(player_id);
 CREATE INDEX IF NOT EXISTS idx_players_email ON players(email);
 CREATE INDEX IF NOT EXISTS idx_players_firebase_uid ON players(firebase_uid);
+CREATE INDEX IF NOT EXISTS idx_players_is_active ON players(is_active) WHERE is_active = true;
 
 -- View for player statistics
 CREATE OR REPLACE VIEW player_stats AS

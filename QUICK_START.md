@@ -1,20 +1,16 @@
-# Quick Start Guide - Deployment to TeamFunPokerStars.com
+# Quick Start Guide - Deployment
 
-## ✅ What's Ready
+## Features Included
 
-Your application is **100% ready for deployment** with all features complete:
-
-- ✅ Magic link authentication
-- ✅ Admin-only features (you as admin)
-- ✅ Podium scoring (100/50/10 points)
-- ✅ Responsive design
-- ✅ Demo mode for testing
-- ✅ Production build tested
-- ✅ All code committed to git
+- Magic link authentication
+- Admin-only features
+- Podium scoring (100/50/10 points)
+- Responsive design
+- Demo mode for testing
 
 ---
 
-## 🚀 Next Steps (Do This Now!)
+## Deployment Steps
 
 ### 1. Create GitHub Repository (5 minutes)
 
@@ -146,7 +142,7 @@ git push -u origin main
    DATABASE_URL=${POSTGRES_URL} (Reference from PostgreSQL service)
    PORT=3001
    NODE_ENV=production
-   ADMIN_EMAIL=ranjit.jose.2012@gmail.com
+   ADMIN_EMAIL=your-admin-email@example.com
    FIREBASE_PROJECT_ID=your-project-id
    FIREBASE_CLIENT_EMAIL=your-service-account-email
    FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
@@ -158,11 +154,11 @@ git push -u origin main
    - Download JSON file
    - Copy values to Railway environment variables
 
-6. **Run Database Migrations**
+6. **Run Database Schema**
    - Click on PostgreSQL service
    - Click "Connect"
    - Use connection URL to connect via psql or TablePlus
-   - Run SQL from `server/migrations/001_initial_schema.sql`
+   - Run SQL from `server/database/schema.sql`
 
 7. **Get Backend URL**
    - Click on backend service
@@ -206,20 +202,16 @@ git push -u origin main
 
 ---
 
-## 🎉 You're Live!
+## Post-Deployment
 
-### Share With Your Friends:
-
-**Website:** https://teamfunpokerstars.com
-
-**How They Sign Up:**
+### User Sign-Up Process:
 1. Visit the website
-2. Enter their email
+2. Enter email address
 3. Click "Send Magic Link"
 4. Check email and click the link
-5. They're in! ✅
+5. Access granted
 
-### As Admin, You Can:
+### Admin Capabilities:
 1. Add new players (Players page)
 2. Create games (Games page)
 3. Delete games (Games page)
@@ -256,8 +248,9 @@ git push -u origin main
 
 ---
 
-## 🎯 Estimated Total Time: 75 minutes
+## Estimated Time & Cost
 
+**Setup Time:** Approximately 75 minutes
 - GitHub: 5 min
 - Domain: 10 min
 - Vercel: 10 min
@@ -265,18 +258,8 @@ git push -u origin main
 - Railway: 20 min
 - Domain Setup: 15 min
 
-**Total Cost:**
+**Estimated Cost:**
 - Domain: ~$10/year
-- Vercel: FREE (hobby plan)
-- Railway: FREE (hobby plan, $5/month if you exceed limits)
-- Firebase: FREE (generous free tier)
-
-**Estimated Monthly Cost:** $0-5
-
----
-
-## ✨ Ready to Deploy!
-
-Follow the steps above in order, and you'll have your poker championship tracker live at **TeamFunPokerStars.com** within the hour!
-
-Good luck with your poker games! ♠️♣️♥️♦️
+- Vercel: Free (hobby plan)
+- Railway: Free (hobby plan, $5/month if limits exceeded)
+- Firebase: Free tier

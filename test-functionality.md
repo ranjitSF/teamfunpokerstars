@@ -92,9 +92,7 @@
 
 ### Year Filter
 - [ ] "All Time" button displays and works
-- [ ] "2024" button displays and works
-- [ ] "2023" button displays and works
-- [ ] "2022" button displays and works
+- [ ] "2026" button displays and works
 - [ ] Active button has highlighted styling
 - [ ] Clicking filter refetches data
 - [ ] Data updates after filter selection

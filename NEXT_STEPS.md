@@ -1,6 +1,6 @@
-# 🎯 Next Steps for Your Poker Championship Tracker
+# Next Steps for Poker Championship Tracker
 
-Congratulations! Your elegant poker tracking app is ready. Here's what to do next:
+This guide covers setup, customization, and usage of the application.
 
 ## ✅ Immediate Tasks
 
@@ -71,8 +71,8 @@ if (!AUTHORIZED_EMAILS.includes(email)) {
 Edit `server/utils/points.js` to change scoring:
 
 ```javascript
-// Current: 100, 85, 70, 55, 40, 25, 15, 5 (for 8 players)
-// You can modify the formula to suit your preferences
+// Current scoring: 1st = 100, 2nd = 50, 3rd = 10, 4th+ = 0
+// Only top 3 finishers earn points
 ```
 
 ### Change Theme Colors
@@ -184,17 +184,10 @@ npm install
 - Search error messages
 - Check Firebase/Vercel logs
 
-## 🎉 You're Ready!
+## Application Capabilities
 
-Your elegant Poker Championship Tracker is ready to:
-- Track unlimited games and players
+The Poker Championship Tracker can:
+- Track games and players
 - Calculate rankings automatically
 - Send reminder emails
-- Look beautiful on all devices
-- Scale with your poker group
-
-**Time to deal the cards and may the best player win!** ♠️♣️♥️♦️
-
----
-
-Questions about your group's specific needs? Customize the code to fit your style!
+- Work on desktop and mobile devices

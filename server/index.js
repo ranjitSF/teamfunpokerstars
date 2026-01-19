@@ -34,10 +34,29 @@ app.use('/api/players', playersRouter);
 app.use('/api/games', gamesRouter);
 app.use('/api/stats', statsRouter);
 
+// 404 handler for unmatched routes
+app.use((req, res) => {
+  res.status(404).json({ error: 'Not found' });
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Something went wrong!' });
+  // Log error details in development
+  if (process.env.NODE_ENV !== 'production') {
+    console.error('Error:', err.message);
+    console.error('Stack:', err.stack);
+  } else {
+    console.error('Error:', err.message);
+  }
+
+  // Determine status code
+  const statusCode = err.statusCode || err.status || 500;
+
+  // Send appropriate error response
+  res.status(statusCode).json({
+    error: statusCode === 500 ? 'Internal server error' : err.message,
+    ...(process.env.NODE_ENV !== 'production' && { stack: err.stack }),
+  });
 });
 
 // Start server

@@ -8,9 +8,7 @@ import Dashboard from './pages/Dashboard';
 import Leaderboard from './pages/Leaderboard';
 import Games from './pages/Games';
 import Players from './pages/Players';
-
-// Check if we're in demo mode
-const isDemoMode = import.meta.env.VITE_MODE === 'demo';
+import { isDemoMode } from './config/app';
 
 function App() {
   return (
@@ -18,52 +16,21 @@ function App() {
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <Layout>
-                  <Dashboard />
-                </Layout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/leaderboard"
-            element={
-              <ProtectedRoute>
-                <Layout>
-                  <Leaderboard />
-                </Layout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/games"
-            element={
-              <ProtectedRoute>
-                <Layout>
-                  <Games />
-                </Layout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/players"
-            element={
-              <ProtectedRoute>
-                <Layout>
-                  <Players />
-                </Layout>
-              </ProtectedRoute>
-            }
-          />
+
+          {/* Protected routes with shared layout */}
+          <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/leaderboard" element={<Leaderboard />} />
+            <Route path="/games" element={<Games />} />
+            <Route path="/players" element={<Players />} />
+          </Route>
+
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
       {isDemoMode && (
         <div className="fixed bottom-4 right-4 bg-poker-accent text-poker-dark px-4 py-2 rounded-lg font-bold shadow-gold z-50">
-          🎮 DEMO MODE
+          DEMO MODE
         </div>
       )}
     </AuthProvider>

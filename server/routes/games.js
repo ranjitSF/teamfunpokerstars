@@ -3,6 +3,7 @@ import pool from '../database/db.js';
 import { verifyToken } from '../config/firebase.js';
 import { calculateGamePoints } from '../utils/points.js';
 import { formatInTimeZone } from 'date-fns-tz';
+import { isValidDate, isPositiveInteger, validateGameResults, sanitizeString } from '../utils/validation.js';
 
 const router = express.Router();
 
@@ -10,6 +11,12 @@ const router = express.Router();
 router.get('/', verifyToken, async (req, res) => {
   try {
     const { year } = req.query;
+
+    // Validate year if provided
+    if (year && !isPositiveInteger(year)) {
+      return res.status(400).json({ error: 'Invalid year parameter' });
+    }
+
     let query = `
       SELECT
         g.*,
@@ -23,7 +30,7 @@ router.get('/', verifyToken, async (req, res) => {
     const params = [];
     if (year) {
       query += ' WHERE EXTRACT(YEAR FROM g.game_date) = $1';
-      params.push(year);
+      params.push(parseInt(year, 10));
     }
 
     query += ' GROUP BY g.id, p.name ORDER BY g.game_date DESC';
@@ -69,12 +76,20 @@ router.get('/:id', verifyToken, async (req, res) => {
 
 // Create a new game
 router.post('/', verifyToken, async (req, res) => {
+  const { game_date, notes, created_by_uid } = req.body;
+
+  // Validate required fields
+  if (!created_by_uid) {
+    return res.status(400).json({ error: 'Creator UID is required' });
+  }
+  if (!isValidDate(game_date)) {
+    return res.status(400).json({ error: 'Valid game date is required' });
+  }
+
   const client = await pool.connect();
 
   try {
     await client.query('BEGIN');
-
-    const { game_date, notes, created_by_uid } = req.body;
 
     // Get player ID from Firebase UID
     const playerResult = await client.query(
@@ -109,12 +124,23 @@ router.post('/', verifyToken, async (req, res) => {
 
 // Update game results (positions)
 router.put('/:id/results', verifyToken, async (req, res) => {
+  const { results } = req.body; // Array of {player_id, position, attended}
+
+  // Validate game ID
+  if (!isPositiveInteger(req.params.id)) {
+    return res.status(400).json({ error: 'Invalid game ID' });
+  }
+
+  // Validate results
+  const validation = validateGameResults(results);
+  if (!validation.valid) {
+    return res.status(400).json({ error: validation.error });
+  }
+
   const client = await pool.connect();
 
   try {
     await client.query('BEGIN');
-
-    const { results } = req.body; // Array of {player_id, position, attended}
 
     // Delete existing results
     await client.query('DELETE FROM game_results WHERE game_id = $1', [req.params.id]);

@@ -2,11 +2,12 @@ import express from 'express';
 import pool from '../database/db.js';
 import { verifyToken } from '../config/firebase.js';
 import { sendWelcomeEmail } from '../utils/email.js';
+import { isValidEmail, isValidName, isPositiveInteger, sanitizeString } from '../utils/validation.js';
 
 const router = express.Router();
 
-// Admin email
-const ADMIN_EMAIL = 'ranjit.jose.2012@gmail.com';
+// Admin email (from environment variable)
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 
 // Get all players
 router.get('/', verifyToken, async (req, res) => {
@@ -89,14 +90,23 @@ router.post('/', verifyToken, async (req, res) => {
       return res.status(403).json({ error: 'Only admins can add players' });
     }
 
-    if (!name || !email) {
-      return res.status(400).json({ error: 'Name and email are required' });
+    // Validate name
+    if (!isValidName(name)) {
+      return res.status(400).json({ error: 'Valid name is required (1-100 characters)' });
     }
+
+    // Validate email
+    if (!isValidEmail(email)) {
+      return res.status(400).json({ error: 'Valid email is required' });
+    }
+
+    const sanitizedName = sanitizeString(name);
+    const sanitizedEmail = sanitizeString(email).toLowerCase();
 
     // Check if player already exists
     const existingPlayer = await pool.query(
       'SELECT id, name, email FROM players WHERE email = $1',
-      [email]
+      [sanitizedEmail]
     );
 
     if (existingPlayer.rows.length > 0) {
@@ -106,7 +116,7 @@ router.post('/', verifyToken, async (req, res) => {
     // Create player with a temporary firebase_uid (will be updated when they sign in)
     const result = await pool.query(
       'INSERT INTO players (firebase_uid, email, name, is_active) VALUES ($1, $2, $3, true) RETURNING id, name, email, created_at',
-      [`pending_${email}`, email, name]
+      [`pending_${sanitizedEmail}`, sanitizedEmail, sanitizedName]
     );
 
     const newPlayer = result.rows[0];
@@ -118,6 +128,33 @@ router.post('/', verifyToken, async (req, res) => {
   } catch (error) {
     console.error('Error adding player:', error);
     res.status(500).json({ error: 'Failed to add player' });
+  }
+});
+
+// Get all players with stats (batch endpoint to avoid N+1 queries)
+router.get('/with-stats', verifyToken, async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT
+        p.id, p.name, p.email, p.phone, p.created_at, p.is_active,
+        COALESCE(ps.games_played, 0) as games_played,
+        COALESCE(ps.total_points, 0) as total_points,
+        COALESCE(ps.avg_points, 0) as avg_points,
+        COALESCE(ps.avg_position, 0) as avg_position,
+        COALESCE(ps.first_place_finishes, 0) as first_place_finishes,
+        COALESCE(ps.second_place_finishes, 0) as second_place_finishes,
+        COALESCE(ps.third_place_finishes, 0) as third_place_finishes,
+        COALESCE(ps.best_finish, 0) as best_finish,
+        COALESCE(ps.worst_finish, 0) as worst_finish
+      FROM players p
+      LEFT JOIN player_stats ps ON p.id = ps.id
+      WHERE p.is_active = true
+      ORDER BY p.name`
+    );
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error fetching players with stats:', error);
+    res.status(500).json({ error: 'Failed to fetch players with stats' });
   }
 });
 
@@ -174,13 +211,21 @@ router.patch('/:id/name', verifyToken, async (req, res) => {
       return res.status(403).json({ error: 'Only admins can update player names' });
     }
 
-    if (!name || name.trim() === '') {
-      return res.status(400).json({ error: 'Name is required' });
+    // Validate player ID
+    if (!isPositiveInteger(playerId)) {
+      return res.status(400).json({ error: 'Invalid player ID' });
     }
+
+    // Validate name
+    if (!isValidName(name)) {
+      return res.status(400).json({ error: 'Valid name is required (1-100 characters)' });
+    }
+
+    const sanitizedName = sanitizeString(name);
 
     const result = await pool.query(
       'UPDATE players SET name = $1 WHERE id = $2 RETURNING id, name, email, phone, created_at',
-      [name.trim(), playerId]
+      [sanitizedName, playerId]
     );
 
     if (result.rows.length === 0) {

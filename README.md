@@ -1,19 +1,19 @@
-# ♠️ Team Fun Poker Stars Championship Series
+# Team Fun Poker Stars Championship Series
 
-An elegant, full-featured web application for tracking poker championship rankings among friends. Built with React, Node.js, PostgreSQL, and Firebase Authentication.
+A web application for tracking poker championship rankings among friends. Built with React, Node.js, PostgreSQL, and Firebase Authentication.
 
-## ✨ Features
+## Features
 
-- **User Authentication**: Secure email-based authentication via Firebase
-- **Real-time Dashboard**: Beautiful dashboard with comprehensive statistics
-- **Leaderboard**: All-time and yearly rankings with elegant podium display
+- **User Authentication**: Email-based authentication via Firebase
+- **Dashboard**: Player statistics and performance tracking
+- **Leaderboard**: All-time and yearly rankings with podium display
 - **Game Management**: Create poker sessions and track results
-- **Smart Scoring**: Position-based points system that rewards consistency
+- **Scoring System**: Position-based points (100/50/10 for top 3)
 - **Automated Reminders**: Email notifications for unrecorded game results
-- **Responsive Design**: Elegant UI that works on all devices
-- **Comprehensive Stats**: Win rates, average positions, streaks, and more
+- **Responsive Design**: Works on desktop and mobile devices
+- **Statistics**: Win rates, average positions, and podium finishes
 
-## 🚀 Tech Stack
+## Tech Stack
 
 ### Frontend
 - React 18 with Vite
@@ -34,14 +34,14 @@ An elegant, full-featured web application for tracking poker championship rankin
 - Vercel for hosting
 - Vercel Cron Jobs for scheduled emails
 
-## 📋 Prerequisites
+## Prerequisites
 
 - Node.js 18+ and npm
 - PostgreSQL database
 - Firebase project (for authentication)
 - SMTP credentials (for email notifications)
 
-## 🛠️ Installation
+## Installation
 
 1. **Clone the repository**
    ```bash
@@ -103,7 +103,7 @@ An elegant, full-featured web application for tracking poker championship rankin
 6. **Run database migrations**
    The schema will create all necessary tables, views, and indexes.
 
-## 🏃 Running Locally
+## Running Locally
 
 ### Development Mode
 ```bash
@@ -121,7 +121,7 @@ npm run build
 npm start
 ```
 
-## 🌐 Deployment to Vercel
+## Deployment to Vercel
 
 1. **Push to GitHub**
    ```bash
@@ -146,34 +146,25 @@ npm start
 4. **Configure Cron Job**
    The cron job is automatically configured via `vercel.json` to run hourly.
 
-## 📊 Points System
+## Points System
 
-The app uses a podium-based scoring system that rewards top finishers:
+The application uses a podium-based scoring system:
 
-- **1st place**: 100 points 🥇
-- **2nd place**: 50 points 🥈
-- **3rd place**: 10 points 🥉
+- **1st place**: 100 points
+- **2nd place**: 50 points
+- **3rd place**: 10 points
 - **4th+ place**: 0 points
 
-Only the top 3 finishers earn points in each game, rewarding podium finishes and consistent top performance.
+Only the top 3 finishers earn points in each game.
 
-## 📧 Email Notifications
+## Email Notifications
 
-The app automatically sends reminder emails:
+The application automatically sends reminder emails:
 - Triggered 24 hours after a game if positions aren't recorded
-- Beautiful HTML emails with branding
+- HTML email templates
 - Only sent once per game
 
-## 🎨 Design Philosophy
-
-The app features an elegant, premium design inspired by:
-- Sophisticated poker aesthetics
-- Gold and dark color palette
-- Smooth animations and transitions
-- Modern card-based layouts
-- Responsive grid systems
-
-## 📁 Project Structure
+## Project Structure
 
 ```
 PokerRankings/
@@ -196,7 +187,7 @@ PokerRankings/
 └── public/                # Static assets
 ```
 
-## 🔐 Security Notes
+## Security Notes
 
 - Never commit `.env` file
 - Use Firebase Authentication for secure user management
@@ -204,7 +195,7 @@ PokerRankings/
 - Passwords are handled by Firebase (not stored in your DB)
 - SMTP credentials should use app-specific passwords
 
-## 🎯 Usage
+## Usage
 
 ### For Players:
 1. Sign up with your authorized email
@@ -218,18 +209,6 @@ PokerRankings/
 3. After the game, enter final positions
 4. System automatically calculates points
 
-## 🤝 Contributing
+## License
 
-This is a private app for your poker group, but feel free to fork and customize for your own use!
-
-## 📝 License
-
-MIT License - Feel free to use and modify for your own poker group.
-
-## 🎰 Credits
-
-Built with ❤️ for poker enthusiasts who love tracking their championship journey.
-
----
-
-**May the odds be ever in your favor!** ♠️♣️♥️♦️
+MIT License
